@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { requestDataAction, receiveDataSuccessAction, receiveDataFailedAction } from '../redux/actions'
 
@@ -7,30 +7,33 @@ function mapStateToProps(state) {
     return state;
 }
 
-function Func(props){
+class CharacterList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.doReadAction = this.doReadAction.bind(this);
+        this.doDeleteAction = this.doDeleteAction.bind(this);
+    }
     //READ
-    useEffect(() => {
-        //console.log(props);
-        props.dispatch(requestDataAction());
+    doReadAction() {
+        this.props.dispatch(requestDataAction());
         fetch('http://localhost:8080/api/item/')
             .then(res => {
                 return res.json()
             })
             .then(data => {
                 const array = data;
-                //console.log(array);
-                props.dispatch(receiveDataSuccessAction(array));
+                console.log(array);
+                this.props.dispatch(receiveDataSuccessAction(array));
             })
             .catch(err => {
                 console.err(new Error(err));
-                props.dispatch(receiveDataFailedAction());
+                this.props.dispatch(receiveDataFailedAction());
             });
-    }, []);
-    
+    }
     //DELETE
-    const doDeleteAction = (id) => {
+    doDeleteAction(id) {
         const data = { id }; //JSONデータにしないといけない。
-        props.dispatch(requestDataAction());
+        this.props.dispatch(requestDataAction());
         fetch('http://localhost:8080/api/item/', {
             method: 'DELETE',
             headers: {
@@ -43,54 +46,40 @@ function Func(props){
             })
             .then(data => {
                 const array = data;
-                props.dispatch(receiveDataSuccessAction(array));
+                this.props.dispatch(receiveDataSuccessAction(array));
             })
             .catch(err => {
                 console.err(new Error(err));
-                props.dispatch(receiveDataFailedAction());
+                this.props.dispatch(receiveDataFailedAction());
             });
     }
-
-    return (
-        
-        <div>
-            {
-                props.characters.isFetching
+    componentDidMount() {
+        this.doReadAction();
+    }
+    render() {
+        return ( //下記は式である必要がある。
+            <div>
+                {
+                    this.props.characters.isFetching
                     ? <h2>ロード中です。</h2>
                     : <div>
                         <ul>
                             {
-                                props.characters.characterArray.map(character => (
-                                    //console.log(character)
+                                //console.log(this.props.characters)
+                                this.props.characters.characterArray.map(character => (
                                     <li key={character._id}>
                                         {`${character.comment}`}
-                                        <button onClick={() => doDeleteAction(character._id)}>削除</button>
+                                        <button onClick={() => this.doDeleteAction(character._id)}>削除</button>
                                     </li>
                                 ))
                             }
                         </ul>
                     </div>
-            }
-        </div>
-    )
+                }
+            </div>
+        )
+    }
 }
+CharacterList = connect(mapStateToProps)(CharacterList);
 
-export const CharacterList = connect(mapStateToProps)(Func);
-
-//表示確認用
-/*
-export function FuncComp() {
-    //stateの作成
-    const [count, setCount] = useState(0);
-    //ライフサイクルの設定。レンダリングに毎回呼び出される（初回も含む）。
-    useEffect(() => {
-       console.log(count);
-    });
-    return (
-        <div>
-            <p>{count}回クリックしたよ！</p>
-            <button onClick={()=> setCount(count + 1)}>クリック</button>
-        </div>
-    )
-}
-*/
+export { CharacterList }

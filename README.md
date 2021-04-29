@@ -1,22 +1,116 @@
 # MERNDevEnv2
-関数コンポーネントとHooksを用いたReact処理
-https://tyotto-good.com/blog/reaseons-to-use-function-component
-https://ja.reactjs.org/docs/hooks-effect.html
-
-```
-useEffect は毎回のレンダー後に呼ばれるのか？ その通りです！ デフォルトでは、副作用関数は **初回のレンダー時および毎回の更新時に呼び出されます** 。あとでカスタマイズする方法について説明します。「マウント」と「更新」という観点で考えるのではなく、「レンダーの後」に副作用は起こる、というように考える方が簡単かもしれません。React は、副作用が実行される時点では DOM が正しく更新され終わっていることを保証します。
-```
-
-
-
 MERNスタック（MongoDB, Express, React, Node.js）開発環境の最小構成です。  
 状態管理にReduxを用いています。
 
 
+## 関数コンポーネントとHooksを用いたReact処理  
+- https://tyotto-good.com/blog/reaseons-to-use-function-component  
+Reactでクラスコンポーネントより関数コンポーネントを使うべき理由5選  
+- https://ja.reactjs.org/docs/hooks-intro.html
+- https://ja.reactjs.org/docs/hooks-effect.html
+
+
+## 関数コンポーネントとHooksについて  
+https://ja.reactjs.org/docs/hooks-overview.html  
+フックとは、関数コンポーネントに state やライフサイクルといった React の機能を “接続する (hook into)” ための関数です。  
+フックの接頭辞には「use」が使われる。  
+おもに次の2つのフックがある。  
+1. ステートフックの「useState()」  
+2. 副作用フックの「useEffect()」  
+
+### 1. ステートフックの「useState()」
+速習：https://ja.reactjs.org/docs/hooks-overview.html#state-hook  
+詳細：https://ja.reactjs.org/docs/hooks-state.html （多分速習でほとんどわかる）  
+`const [count, setCount] = useState(0);`の  
+- `count`はstateのプロパティ。  
+- `setCount`はstateのプロパティを更新する関数。  
+useState は現在の state の値と、それを更新するための関数とを**ペアにして**返します。  
+この関数（`setCount()`）はイベントハンドラやその他の場所から呼び出すことができます。  
+`useState(0)`の「0」は state (上の例の場合だと`count`)の初期値です。引数として渡された state の初期値は最初のレンダー時にのみ使用されます。  
+`useState()`は複数呼び出すことができます。  
+例：  
+```
+const [age, setAge] = useState(42);
+const [fruit, setFruit] = useState('banana');
+const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
+```
+
+#### 個人的な所感  
+classコンポーネントのthis.stateやそれ以降this.stateに与える処理を一括で定義など行う感じ。  
+
+### 2. 副作用フックの「useEffect()」  
+速習：https://ja.reactjs.org/docs/hooks-overview.html#effect-hook  
+詳細：https://ja.reactjs.org/docs/hooks-effect.html  
+`componentDidMount()`といったライフサイクルを関数コンポーネントで利用できるようにした感じ。  
+```
+React のライフサイクルに馴染みがある場合は、useEffect フックを componentDidMount と componentDidUpdate と componentWillUnmount がまとまったものだと考えることができます。
+```
+↓ ちょっと副作用の説明がわからないから後でよく理解しておく。  
+```
+これまでに React コンポーネントの内部から、外部データの取得や購読 (subscription)、あるいは手動での DOM 更新を行ったことがおありでしょう。これらの操作は他のコンポーネントに影響することがあり、またレンダーの最中に実行することができないので、われわれはこのような操作を “副作用 (side-effects)“、あるいは省略して “作用 (effects)” と呼んでいます。
+```
+**useEffect()は毎回レンダリング後に呼ばれるようだ。**  
+```
+Q:useEffect は毎回のレンダー後に呼ばれるのか？ 
+A:その通りです！ デフォルトでは、副作用関数は **初回のレンダー時および毎回の更新時に呼び出されます** 。あとでカスタマイズする方法について説明します。「マウント」と「更新」という観点で考えるのではなく、「レンダーの後」に副作用は起こる、というように考える方が簡単かもしれません。React は、副作用が実行される時点では DOM が正しく更新され終わっていることを保証します。
+```
+`useEffect()`も複数呼び出すことができます。  
+
+`useEffect()`はクロージャを活用している。  
+この部分の詳細はよくわかっていないので、また後で読む。  
+
+## フックのルール
+速習：https://ja.reactjs.org/docs/hooks-overview.html#rules-of-hooks  
+詳細：https://ja.reactjs.org/docs/hooks-rules.html  
+1. 関数のトップレベルのみで呼び出してください。ループや条件分岐やネストした関数の中でフックを呼び出さないでください。
+2. 関数コンポーネントの内部のみで呼び出してください。通常の JavaScript 関数内では呼び出さないでください（ただしフックを呼び出していい場所がもう 1 カ所だけあります — **自分のカスタムフックの中です**）。
+
+## 独自のフック：カスタムフック
+速習：https://ja.reactjs.org/docs/hooks-overview.html#building-your-own-hooks  
+詳細：https://ja.reactjs.org/docs/hooks-custom.html  
+**カスタムフックを作る際には慣習的に`use`という接頭辞をつける**  
+カスタムフックと行っているが、要は「普通の関数と同じ」で、接頭辞`use`という関数を作り、それぞれのケースの引数を受け取って他の関数などに渡したい値をreturnすればいいということになる。
+例：  
+```
+//カスタムフック
+function useFriendStatus(friendID) {
+    const [isOnline, setIsOnline] = useState(null);
+    〜様々な処理〜
+    return isOnline;
+}
+
+function FriendStatus(props) {
+    //引数propsは何？←おそらくReactコンポーネント<App 〇〇="aaa">の「〇〇="aaa"」のこと。
+    //今回は<FriendStatus friend="aaa">？
+    const isOnline = useFriendStatus(props.friend.id); //カスタムフックの呼びだし
+    return isOnline ? 'Online' : 'Offline';
+}
+
+function FriendListItem(props) { //この引数propsは何？
+    const isOnline = useFriendStatus(props.friend.id); //カスタムフックの呼びだし
+    return (
+        <li style={{ color: isOnline ? 'green' : 'black' }}>
+            {props.friend.name}
+        </li>
+    );
+}
+
+※React のコンポーネントと違い、カスタムフックは特定のシグネチャを持つ必要はありません。何を引数として受け取り、そして（必要なら）何を返すのか、といったことは自分で決めることができます。別の言い方をすると、**普通の関数と同じだ**ということです。
+```
+
+## useEffect()でfetchするとループが発生。
+https://qiita.com/ossan-engineer/items/c3853315f59dc20bc9dc
+```
+アプリケーションを実行すると厄介なループに陥るでしょう。副作用フックはコンポーネントのマウント時だけでなく、更新時にも実行されます。データを取得するたびに state を設定しているため、コンポーネントが更新されて副作用が再び実行されるからです。データ取得を何度も繰り返してしまいます。これはバグなので回避する必要があります。コンポーネントのマウント時にだけデータを取得するようにしましょう。 副作用フックの第2引数に空配列（[]）を渡すことで、コンポーネント更新時ではなくマウント時にだけ有効化することができます。
+```
+
 ## 使い方
 1. `npm ci`でパッケージをインストール。
-2. npm scriptsの`npm run dev`で開発環境が走る。
-3. フロントエンドサーバーとバックエンドサーバーの両方にアクセスして、表示されるか確認。
+2. DBを起動する。DBフォルダを`/Users/ユーザーの名前〇〇/Documents/ProgrammingTest/project/__dbfolder/`内の任意の場所に作成する。
+    - ターミナルをもう一つ開き、次のコマンドを起動する。
+    - `sudo mongod --dbpath /Users/ユーザーの名前〇〇/Documents/ProgrammingTest/project/__dbfolder/任意で作成したフォルダ名`
+3. npm scriptsの`npm run dev`で開発環境が走る。
+4. フロントエンドサーバーとバックエンドサーバーの両方にアクセスして、表示されるか確認。
     - http://localhost:8080/  
     ↑ フロントエンドサーバー（`webpack-dev-server`）フロントエンド開発時に利用。  
     - http://localhost:3000/  
@@ -24,22 +118,19 @@ MERNスタック（MongoDB, Express, React, Node.js）開発環境の最小構�
     - http://localhost:8080/api/  
     ↑ `server/server.js`でルーティングしているページ。  
     `{"message":"こんにちは、世界"}`が表示されているか  
-7. DBを起動する。DBフォルダを任意の場所に作成する。
-    - ターミナルをもう一つ開き、次のコマンドを起動する。
-    - `sudo mongod --dbpath /Users/morinagakensuke/Documents/ProgrammingTest/project/__dbfolder/任意で作成したフォルダ名`
-8. DBモデルはすでに`server/models/itemModel.js`に作成してある。
+5. DBモデルはすでに`server/models/itemModel.js`に作成してある。
     - DBモデル参考：https://qiita.com/ngmr_mo/items/73cc7160d002a4989416#model%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90
-9. POSTしてデータが記録されるか確認する。  
+6. POSTしてデータが記録されるか確認する。  
     - http://localhost:8080/  にアクセスして `Hello, World`を入力し、追加ボタンを押す  
     - 追加したデータが表示されていればOK  
-    - ターミナルをもう一つ開き、curlで下記のコマンドを実行する。  
     ※curlコマンドでもサーバーにデータを送ることができる。覚えておくと役立つ。  
-    例：`curl -X POST -H "Content-Type: application/json" -d '{"name":"名前のデータです。", "category":"カテゴリーのデータです。", "price":"1234567890"}' localhost:3000/api/item/`  
+    例：`curl -X POST -H "Content-Type: application/json" -d '{"comment":"コメントのデータです。"}' localhost:3000/api/item/`  
     - http://localhost:8080/api/item/  
     ↑ バックエンドからフロントエンドへプロクシを繋いでCORS問題が解消されているか確認。  
-    `[{"_id":"6089a22dde8bb67208432f77","comment":"Hello, World","__v":0}]`と表示されていればOK  
-    - `curl http://localhost:8080/api/item | jq .`を実行して`Hello, World`を含むJSONオブジェクトが表示されていればOK  
-11. 完了。※あとは、React.jsやJavaScriptでSPAを構築する作業を行う。
+    `[{"_id":"〇〇","comment":"Hello, World","__v":0}]`と表示されていればOK  
+    - `curl http://localhost:8080/api/item | jq .`を実行して`Hello, World`を含むJSONオブジェクトが表示されていればOK。（"_id"部分は適当な数字でいい）  
+7. 完了。  
+    ※あとは、React.jsやJavaScriptでSPAを構築する作業を行う。  
 
 
 ## 各フォルダとファイルの説明
@@ -124,7 +215,13 @@ https://qiita.com/kitagawamac/items/49a1f03445b19cf407b7
 Reactは、ステートを利用して、ステートに変更があれば、その差分のみを再描画することができる。 
 
 
-## プロジェクト別
+## 技術スタック
+- React
+- Redux
+- MongoDB
+- Expressサーバー
+- webpack-dev-server（開発時。ProxyでExpressサーバーと繋ぐ。webpack.config.dev.js）
+- Babel
 
 
 ## 参考元
