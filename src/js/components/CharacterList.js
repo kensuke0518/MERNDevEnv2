@@ -7,7 +7,7 @@ function mapStateToProps(state) {
     return state;
 }
 
-function Func(props){
+function Func(props){ //このpropsは、下のconnect()()でストアに接続した際にプロバイダ経由で受け取るストアのデータ
     //READ
     useEffect(() => {
         //console.log(props);

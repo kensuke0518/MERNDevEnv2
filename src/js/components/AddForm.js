@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { changeCommentAction, initializeFormAction, requestDataAction, receiveDataSuccessAction, receiveDataFailedAction } from '../redux/actions';
 
@@ -7,58 +7,40 @@ function mapStateToProps(state) {
     return state;
 }
 
-class AddForm extends React.Component {
-    constructor(props) {
-        super(props);
-        const comment = this.props.form;
-        //console.log(comment);
-        this.state = {
-            comment: ''
-        }
-        this.doChange = this.doChange.bind(this);
-        this.doAction = this.doAction.bind(this);
-    }
-    doChange(e) {
-        this.setState({
-            comment: e.target.value
-        });
-    }
-    //CREATE
-    doAction(e) {
+function func(props) {
+    const [comment, setComment] = useState('');
+    const doChange = (e) => {
+        setComment(e.target.value);
+    };
+    const doAction = (e) => {
         e.preventDefault();
         fetch('http://localhost:8080/api/item/', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json; charset=utf-8"
             },
-            body: JSON.stringify(this.state),
+            body: JSON.stringify({ comment }),
         })
             .then(res => {
                 return res.json();
             })
             .then(data => {
                 console.log(data);
-                //this.props.dispatch(initializeFormAction()); //これが必要か検討する。
                 const characterArray = data;
-                this.props.dispatch(receiveDataSuccessAction(characterArray));
-                this.setState({
-                    comment: ''
-                });
+                props.dispatch(receiveDataSuccessAction(characterArray));
+                setComment('');
             })
             .catch(err => {
                 console.error(new Error(err));
-                this.props.dispatch(receiveDataFailedAction());
+                props.dispatch(receiveDataFailedAction());
             });
-    }
-    render() {
-        return (
-            <form onSubmit={this.doAction}>
-                <input type="text" onChange={this.doChange} value={this.state.comment} />
-                <input type="submit" value="追加" />
-            </form>
-        );
-    }
-}
-AddForm = connect(mapStateToProps)(AddForm);
+    };
 
-export { AddForm };
+    return (
+        <form onSubmit={doAction}>
+            <input type="text" onChange={doChange} value={comment} />
+            <input type="submit" value="追加" />
+        </form>
+    );
+}
+export const AddForm = connect(mapStateToProps)(func);

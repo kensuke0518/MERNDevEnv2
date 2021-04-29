@@ -16,10 +16,10 @@ export const RECEIVE_DATA_FAILED = 'RECEIVE_DATA_FAILED'
 export const changeCommentAction = comment => ({ //フォームからデータをバックエンドへ送信するアクション
     type: CHANGE_COMMENT,
     comment,
-})
+});
 export const initializeFormAction = () => ({
     type: INITIALIZE_FORM,
-})
+});
 
 //READ,UPDATE,DELETE（コメント表示）
 export const requestDataAction = () => ({ //データ取得中とするアクション
