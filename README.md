@@ -118,6 +118,10 @@ useReducer()の引数は、
 が入る。  
   
 あとはReduxと同じで、レデューサーがステートの値を新しくする.  
+
+参考：  
+https://qiita.com/FumioNonaka/items/b910e02ca09cd1b4440b  
+https://qiita.com/uhyo/items/246fb1f30acfeb7699da#usereducer  
   
 ## フックのルール
 速習：https://ja.reactjs.org/docs/hooks-overview.html#rules-of-hooks  
