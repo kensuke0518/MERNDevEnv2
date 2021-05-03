@@ -14,10 +14,11 @@ Reactでクラスコンポーネントより関数コンポーネントを使う
 https://ja.reactjs.org/docs/hooks-overview.html  
 フックとは、関数コンポーネントに state やライフサイクルといった React の機能を “接続する (hook into)” ための関数です。  
 フックの接頭辞には「use」が使われる。  
-おもに次の2つ（+1）のフックがある。  
+おもに次の2つ（+1+α）のフックがある。  
 1. ステートフックの「useState()」  
 2. 副作用フックの「useEffect()」  
 3. カスタムフック（+1, 自分で作る独自のフック）
+4. useReducer()
 
 ### 1. ステートフックの「useState()」
 速習：https://ja.reactjs.org/docs/hooks-overview.html#state-hook  
@@ -96,6 +97,28 @@ function FriendListItem(props) { //この引数propsは何？
 別の言い方をすると、 **普通の関数と同じだ** ということです。
 ```
 
+## 4. useReducer()
+userState()では、  
+    - ステートの値（state）	
+    - ステートの値を変更する関数（setState()）
+の2つが渡された。  
+onChangeなどで、「onChange={setState{state + 1)}」のようにすればstateの値を変更することができた。  
+  
+しかしstateの数が増えるにつれ、冗長なコードとなっていく。  
+そこで*useReducer()*を使う。  
+  
+useReducer()では、  
+    - ステートの値（state）
+    - ディスパッチ関数（dispatch()）：レデューサーに処理を分岐させたり値を渡すアクションを送る関数。
+の2つが渡される。  
+
+useReducer()の引数は、  
+    - 第一引数：実際に使うレデューサー関数が入る
+    - 第二引数：ステートの値（state）
+が入る。  
+  
+あとはReduxと同じで、レデューサーがステートの値を新しくする.  
+  
 ## フックのルール
 速習：https://ja.reactjs.org/docs/hooks-overview.html#rules-of-hooks  
 詳細：https://ja.reactjs.org/docs/hooks-rules.html  
