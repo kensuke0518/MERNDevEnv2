@@ -97,7 +97,7 @@ function FriendListItem(props) { //この引数propsは何？
 別の言い方をすると、 **普通の関数と同じだ** ということです。
 ```
 
-## 4. useReducer()
+### 4. useReducer()
 userState()では、  
 - ステートの値（state）	
 - ステートの値を変更する関数（setState()）
