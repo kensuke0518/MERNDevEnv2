@@ -99,8 +99,8 @@ function FriendListItem(props) { //この引数propsは何？
 
 ## 4. useReducer()
 userState()では、  
-    - ステートの値（state）	
-    - ステートの値を変更する関数（setState()）
+- ステートの値（state）	
+- ステートの値を変更する関数（setState()）
 の2つが渡された。  
 onChangeなどで、「onChange={setState{state + 1)}」のようにすればstateの値を変更することができた。  
   
@@ -108,13 +108,13 @@ onChangeなどで、「onChange={setState{state + 1)}」のようにすればsta
 そこで*useReducer()*を使う。  
   
 useReducer()では、  
-    - ステートの値（state）
-    - ディスパッチ関数（dispatch()）：レデューサーに処理を分岐させたり値を渡すアクションを送る関数。
+- ステートの値（state）
+- ディスパッチ関数（dispatch()）：レデューサーに処理を分岐させたり値を渡すアクションを送る関数。
 の2つが渡される。  
 
 useReducer()の引数は、  
-    - 第一引数：実際に使うレデューサー関数が入る
-    - 第二引数：ステートの値（state）
+- 第一引数：実際に使うレデューサー関数が入る
+- 第二引数：ステートの値（state）
 が入る。  
   
 あとはReduxと同じで、レデューサーがステートの値を新しくする.  
