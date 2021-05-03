@@ -105,7 +105,7 @@ userState()では、
 onChangeなどで、「onChange={setState{state + 1)}」のようにすればstateの値を変更することができた。  
   
 しかしstateの数が増えるにつれ、冗長なコードとなっていく。  
-そこで**useReducer()**を使う。  
+そこで **useReducer()** を使う。  
   
 useReducer()では、  
 - ステートの値（state）
